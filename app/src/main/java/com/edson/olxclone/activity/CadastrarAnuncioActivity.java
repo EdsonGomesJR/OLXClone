@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import dmax.dialog.SpotsDialog;
+
 public class CadastrarAnuncioActivity extends AppCompatActivity
         implements View.OnClickListener {
 
@@ -49,6 +51,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private Spinner campoEstado, campoCategoria;
     private Button buttonCadastrarAnuncio;
     private Anuncio anuncio;
+    private android.app.AlertDialog dialog;
 
     private StorageReference storage;
 
@@ -152,24 +155,31 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
     public void salvarAnuncio() {
 
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Salvando Anuncio")
+                .setCancelable(false)
+                .build();
+        dialog.show();
+
         /**
          * salvar imagem no storage
          */
-        for(int i = 0; i < listaFotosRecuperadas.size(); i++){
-            String urlImagem  = listaFotosRecuperadas.get(i);
+        for (int i = 0; i < listaFotosRecuperadas.size(); i++) {
+            String urlImagem = listaFotosRecuperadas.get(i);
             int tamanhoLista = listaFotosRecuperadas.size();
             salvarFotoStorage(urlImagem, tamanhoLista, i);
         }
 
     }
 
-    private void salvarFotoStorage(String urlStringCaminhoFoto, final int totalFotos, int contador){
+    private void salvarFotoStorage(String urlStringCaminhoFoto, final int totalFotos, int contador) {
 
         //criar nó no storage
         StorageReference imagemAnuncio = storage.child("imagens")
                 .child("anuncios")
                 .child(anuncio.getIdAnuncio())
-                .child("imagem"+contador);
+                .child("imagem" + contador);
 
         //faz upload do arquivo
 
@@ -182,11 +192,12 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                 String urlConvertida = firebaseUrl.toString();
                 listaUrlFotos.add(urlConvertida);
 
-                if(totalFotos == listaUrlFotos.size()){
+                if (totalFotos == listaUrlFotos.size()) {
 
                     anuncio.setFotos(listaUrlFotos);
                     anuncio.salvar();
                     Toast.makeText(CadastrarAnuncioActivity.this, "Produto Cadastrado!!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                     finish();
                 }
 
@@ -202,12 +213,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         });
 
 
-
-
-
     }
 
-    private Anuncio configurarAnuncio(){
+    private Anuncio configurarAnuncio() {
 
         String fone = "";
         String estado = campoEstado.getSelectedItem().toString();
@@ -221,8 +229,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         String descricao = campoDescricao.getText().toString();
 
 
-
-      Anuncio  anuncio = new Anuncio();
+        Anuncio anuncio = new Anuncio();
         anuncio.setEstado(estado);
         anuncio.setCategoria(categoria);
         anuncio.setTitulo(titulo);
@@ -233,14 +240,14 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         return anuncio;
     }
 
-    public void validarDadosAnuncio(  ) {
+    public void validarDadosAnuncio() {
 
         anuncio = configurarAnuncio();
         String valor = String.valueOf(campoValor.getRawValue());
 
 
         String fone = "";
-        if(campoTelefone.getRawText() != null){
+        if (campoTelefone.getRawText() != null) {
             fone = campoTelefone.getRawText();
         }
 
@@ -293,7 +300,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public void onClick(View v) {
 //onclick para selecionar as imagens
@@ -310,7 +316,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
             case R.id.imageCadastro3:
                 escolherImagem(3);
                 break;
-
 
 
         }
