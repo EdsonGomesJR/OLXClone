@@ -157,7 +157,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
         dialog = new SpotsDialog.Builder()
                 .setContext(this)
-                .setMessage("Salvando Anuncio")
+                .setTheme(R.style.Custom)
                 .setCancelable(false)
                 .build();
         dialog.show();
