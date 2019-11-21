@@ -28,8 +28,11 @@ import com.edson.olxclone.R;
 import com.edson.olxclone.helper.ConfiguracaoFirebase;
 import com.edson.olxclone.helper.Permissoes;
 import com.edson.olxclone.model.Anuncio;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -176,7 +179,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private void salvarFotoStorage(String urlStringCaminhoFoto, final int totalFotos, int contador) {
 
         //criar nó no storage
-        StorageReference imagemAnuncio = storage.child("imagens")
+        final StorageReference imagemAnuncio = storage.child("imagens")
                 .child("anuncios")
                 .child(anuncio.getIdAnuncio())
                 .child("imagem" + contador);
@@ -184,7 +187,41 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         //faz upload do arquivo
 
         UploadTask uploadTask = imagemAnuncio.putFile(Uri.parse(urlStringCaminhoFoto));
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return imagemAnuncio.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if (task.isSuccessful()) {
+
+                    Uri downloadUrl = task.getResult();
+                    listaUrlFotos.add(downloadUrl.toString());
+                    if (totalFotos == listaUrlFotos.size()) {
+
+                        anuncio.setFotos(listaUrlFotos);
+                        anuncio.salvar();
+
+                        dialog.dismiss();
+                        finish();
+                    }
+
+                }
+
+            }
+        });
+
+
+        /**   uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -212,7 +249,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
             }
         });
 
-
+         */
     }
 
     private Anuncio configurarAnuncio() {
