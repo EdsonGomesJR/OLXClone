@@ -86,14 +86,15 @@ public class AnunciosActivity extends AppCompatActivity {
                             Anuncio anuncio = anuncios.getValue(Anuncio.class);
                             anuncioList.add(anuncio);
 
-                            Collections.reverse(anuncioList);
-                            adapterAnuncios.notifyDataSetChanged();
-                            dialog.dismiss();
+
                         }
 
                     }
 
                 }
+                Collections.reverse(anuncioList);
+                adapterAnuncios.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
