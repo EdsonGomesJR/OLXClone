@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.edson.olxclone.adapter.AdapterAnuncios;
 import com.edson.olxclone.helper.ConfiguracaoFirebase;
+import com.edson.olxclone.helper.RecyclerItemClickListener;
 import com.edson.olxclone.model.Anuncio;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.edson.olxclone.R;
 import com.google.firebase.database.DataSnapshot;
@@ -67,7 +69,35 @@ public class MeusAnunciosActivity extends AppCompatActivity {
 
         //recuperar anuncios para o user
         recuperarAnuncios();
+
+        //add evento de clique no recyclerview
+
+        recyclerAnuncios.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        this, recyclerAnuncios,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                                Anuncio anuncioSelecionado = anuncioList.get(position);
+                                anuncioSelecionado.remover();
+
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            }
+                        }
+                )
+        );
     }
+
 
     private void recuperarAnuncios() {
 

@@ -22,6 +22,11 @@ public class Anuncio {
         setIdAnuncio(anuncioRef.push().getKey());
     }
 
+    public void remover() {
+
+
+    }
+
     public void salvar() {
 
         String idUsuario = ConfiguracaoFirebase.getIdUsuario();
