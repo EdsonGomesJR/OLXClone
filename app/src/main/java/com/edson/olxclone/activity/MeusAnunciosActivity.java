@@ -1,5 +1,6 @@
 package com.edson.olxclone.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -29,12 +30,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class MeusAnunciosActivity extends AppCompatActivity {
 
     private DatabaseReference anuncioUsuarioRef;
     private RecyclerView recyclerAnuncios;
     private List<Anuncio> anuncioList = new ArrayList<>();
     private AdapterAnuncios adapterAnuncios;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +83,16 @@ public class MeusAnunciosActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(View view, int position) {
 
-                                Anuncio anuncioSelecionado = anuncioList.get(position);
-                                anuncioSelecionado.remover();
+
 
                             }
 
                             @Override
                             public void onLongItemClick(View view, int position) {
+
+                                Anuncio anuncioSelecionado = anuncioList.get(position);
+                                anuncioSelecionado.remover();
+                                adapterAnuncios.notifyDataSetChanged();
 
                             }
 
@@ -101,6 +108,14 @@ public class MeusAnunciosActivity extends AppCompatActivity {
 
     private void recuperarAnuncios() {
 
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setTheme(R.style.Custom)
+                .setMessage("Carregando Anúncios..")
+                .setCancelable(false)
+                .build();
+        dialog.show();
+
         anuncioUsuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -112,6 +127,7 @@ public class MeusAnunciosActivity extends AppCompatActivity {
                 }
                 Collections.reverse(anuncioList);
                 adapterAnuncios.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
