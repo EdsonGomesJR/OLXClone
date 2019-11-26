@@ -74,6 +74,7 @@
         android:id="@+id/buttonVerTelefone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="visualizarTelefone"
         android:text="Ver Telefone"
         android:theme="@style/botao_padrao" />
 

@@ -2,7 +2,10 @@ package com.edson.olxclone.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,6 +54,12 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             carouselView.setPageCount(anuncioSelecionado.getFotos().size());
             carouselView.setImageListener(imageListener);
         }
+    }
+
+    public void visualizarTelefone(View view) {
+
+        Intent i = new Intent(Intent.ACTION_DIAL, Uri.fromParts("Tel", anuncioSelecionado.getTelefone(), null));
+        startActivity(i);
     }
 
     private void inicializarComponentes() {
