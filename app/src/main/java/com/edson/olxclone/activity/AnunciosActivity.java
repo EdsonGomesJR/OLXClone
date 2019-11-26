@@ -13,7 +13,9 @@ import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.edson.olxclone.R;
 import com.edson.olxclone.adapter.AdapterAnuncios;
@@ -40,6 +42,7 @@ public class AnunciosActivity extends AppCompatActivity {
     private AdapterAnuncios adapterAnuncios;
     private List<Anuncio> anuncioList = new ArrayList<>();
     private AlertDialog dialog;
+    private Spinner spinnerFiltroEstado;
 
 
     @Override
@@ -70,6 +73,18 @@ public class AnunciosActivity extends AppCompatActivity {
 
         AlertDialog.Builder dialogEstado = new AlertDialog.Builder(this);
         dialogEstado.setTitle("Selecione o Estado desejado");
+
+        //configurar spinner
+        View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+
+        //spinner de estados
+        String[] estados = getResources().getStringArray(R.array.estados);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, estados);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFiltroEstado.setAdapter(adapter);
+
+        dialogEstado.setView(viewSpinner);
         dialogEstado.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -180,5 +195,6 @@ public class AnunciosActivity extends AppCompatActivity {
         recyclerViewAnunciosPublicos = findViewById(R.id.recyclerAnunciosPublicos);
         buttonRegiao = findViewById(R.id.buttonRegiao);
         buttonCategoria = findViewById(R.id.buttonCategoria);
+        spinnerFiltroEstado = findViewById(R.id.spinnerFiltro);
     }
 }
