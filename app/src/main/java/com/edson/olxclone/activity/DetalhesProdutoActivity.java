@@ -23,6 +23,9 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_produto);
 
+        //config toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         inicializarComponentes();
 
         //recuperar anuncio para exibição
