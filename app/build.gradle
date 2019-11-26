@@ -44,6 +44,9 @@ dependencies {
     //spots dialog
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
 
+    //CarrouselView
+    implementation 'com.synnapps:carouselview:0.1.5'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
