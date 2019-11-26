@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.edson.olxclone.R;
 import com.edson.olxclone.adapter.AdapterAnuncios;
 import com.edson.olxclone.helper.ConfiguracaoFirebase;
+import com.edson.olxclone.helper.RecyclerItemClickListener;
 import com.edson.olxclone.model.Anuncio;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -72,6 +74,30 @@ public class AnunciosActivity extends AppCompatActivity {
 
 
         recuperarAnunciosPublicos();
+
+        recyclerViewAnunciosPublicos.addOnItemTouchListener(new RecyclerItemClickListener(
+                this,
+                recyclerViewAnunciosPublicos,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Anuncio anuncioSelecionado = anuncioList.get(position);
+                        Intent i = new Intent(AnunciosActivity.this, DetalhesProdutoActivity.class);
+                        i.putExtra("anuncioSelecionado", anuncioSelecionado);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    }
+                }
+        ));
     }
 
     public void filtrarPorEstado(View view) {
