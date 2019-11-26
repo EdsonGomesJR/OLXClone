@@ -58,7 +58,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
 
     public void visualizarTelefone(View view) {
 
-        Intent i = new Intent(Intent.ACTION_DIAL, Uri.fromParts("Tel", anuncioSelecionado.getTelefone(), null));
+        Intent i = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", anuncioSelecionado.getTelefone(), null));
         startActivity(i);
     }
 
