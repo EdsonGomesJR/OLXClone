@@ -42,7 +42,8 @@ public class AnunciosActivity extends AppCompatActivity {
     private AdapterAnuncios adapterAnuncios;
     private List<Anuncio> anuncioList = new ArrayList<>();
     private AlertDialog dialog;
-    private Spinner spinnerFiltroEstado;
+    private String filtroEstado = "";
+
 
 
     @Override
@@ -78,16 +79,20 @@ public class AnunciosActivity extends AppCompatActivity {
         View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
 
         //spinner de estados
+        final Spinner spinnerEstado = viewSpinner.findViewById(R.id.spinnerFiltro);
         String[] estados = getResources().getStringArray(R.array.estados);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, estados);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerFiltroEstado.setAdapter(adapter);
+        spinnerEstado.setAdapter(adapter);
 
         dialogEstado.setView(viewSpinner);
         dialogEstado.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                filtroEstado = spinnerEstado.getSelectedItem().toString();
+                recuperarAnunciosPorEstado();
 
             }
         });
@@ -102,6 +107,51 @@ public class AnunciosActivity extends AppCompatActivity {
         AlertDialog dialog = dialogEstado.create();
         dialog.show();
 
+    }
+
+    public void recuperarAnunciosPorEstado() {
+
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setTheme(R.style.Custom)
+                .setMessage("Carregando Anúncios..")
+                .setCancelable(false)
+                .build();
+        dialog.show();
+
+        //config nó por estado
+        anuncioPublicoRef = ConfiguracaoFirebase.getFirebase()
+                .child("anuncios")
+                .child(filtroEstado);
+
+        anuncioPublicoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                anuncioList.clear();
+
+                for (DataSnapshot categorias : dataSnapshot.getChildren()) {
+                    for (DataSnapshot anuncios : categorias.getChildren()) {
+
+                        Anuncio anuncio = anuncios.getValue(Anuncio.class);
+                        anuncioList.add(anuncio);
+
+
+                    }
+
+                }
+
+                Collections.reverse(anuncioList);
+                adapterAnuncios.notifyDataSetChanged();
+                dialog.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void recuperarAnunciosPublicos() {
@@ -195,6 +245,6 @@ public class AnunciosActivity extends AppCompatActivity {
         recyclerViewAnunciosPublicos = findViewById(R.id.recyclerAnunciosPublicos);
         buttonRegiao = findViewById(R.id.buttonRegiao);
         buttonCategoria = findViewById(R.id.buttonCategoria);
-        spinnerFiltroEstado = findViewById(R.id.spinnerFiltro);
+
     }
 }
